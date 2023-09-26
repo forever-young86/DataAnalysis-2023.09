@@ -49,12 +49,13 @@ def get_melon_chart():
     return data
 
 
-def get_restaurant_list(param):
+def get_restaurant_list(place):         # 검색하는것을 준다 "영등포역"을 place로 받기
     base_url = 'https://www.siksinhot.com/search'
-    url = f'{base_url}?keywords={quote(param)}'
+    url = f'{base_url}?keywords={quote(place)}'     # "영등포역"을 place로 quote로 줌
     res = requests.get(url)
     soup = BeautifulSoup(res.text, 'html.parser')
     lis = soup.select('.localFood_list > li')
+    
     data = []
     for li in lis:
         atag = li.select_one('figcaption > a')

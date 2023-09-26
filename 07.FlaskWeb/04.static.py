@@ -11,7 +11,7 @@ def index():
 def static_resource():
     print(app.root_path)        # D:/WorkSpace/02.DataAnalysis/07.FlaskWeb
     # static resource가 Cache로 인하여 즉시 변경이 안되는 경우도 있음
-    img_file = os.path.join(app.root_path, 'static/img/cat.jpg')
+    img_file = os.path.join(app.root_path, 'static/img/cat.jpg')        #util 에서는 app.root_path 못 씀
     mtime = int(os.stat(img_file).st_mtime)      # 마지막으로 변경된 시간
     return render_template('04.static.html', mtime=mtime)
 
