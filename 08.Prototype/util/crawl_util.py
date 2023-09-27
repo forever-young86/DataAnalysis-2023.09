@@ -49,17 +49,18 @@ def get_melon_chart():
     
     return data
 
-def get_restaurant_list(place):
+
+def get_restaurant_list(place):         # 검색하는것을 준다 "영등포역"을 place로 받기
     base_url = 'https://www.siksinhot.com/search'
-    url = f'{base_url}?keywords={quote(place)}'
+    url = f'{base_url}?keywords={quote(place)}'     # "영등포역"을 place로 quote로 줌
     res = requests.get(url)
     soup = BeautifulSoup(res.text, 'html.parser')
     lis = soup.select('.localFood_list > li')
-
+    
     data = []
     for li in lis:
         atag = li.select_one('figcaption > a')
-        name = atag.select_one('h2').get_text().strip()
+        name = atag.select_one('h2').get_text().strip() 
         score = atag.select_one('.score').get_text().strip()
         menu = li.select('.cate > a')[-1].get_text().strip()
         sub_href = atag['href']
@@ -68,6 +69,9 @@ def get_restaurant_list(place):
         info = sub_soup.select('.pc_only > td')
         addr = info[0].select_one('div').get_text().split('지번')[0].strip()
         tel = info[1].select_one('div').get_text().strip()
-        data.append({'업소명':name, '평점':score, '메뉴':menu, '주소':addr, '전화번호':tel})
-    
+
+        href = li.select_one('.localFood_list> li > figure > a')['href']  
+        src = li.select_one('.localFood_list> li > figure > a > img')['src'] 
+        data.append({'업소명':name, '평점':score, '메뉴':menu, '주소':addr, '전화번호':tel, 'href':href, 'img':src})
+
     return data

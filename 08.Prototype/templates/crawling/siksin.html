@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}영등포역 맛집{% endblock %}
+{% block additional_head %} 
+    <style>
+        td, th {padding: 2px; text-align: center;}
+    </style>
+{% endblock %}
+{% block subtitle %}{{place}} 맛집{% endblock %}
+{% block content %}
+    <table class="table" style="margin-bottom: 100px;">
+        <tr>
+            <th>업소명</th>
+            <th>이미지</th>
+            <th>평점</th>
+            <th>메뉴</th>
+            <th>주소</th>
+            <th>전화번호</th>
+        </tr>
+        {% for rest in rest_list %}
+            <tr>
+                <td><a href="{{rest.href}}" target="_blank">{{rest.업소명}}</a></td>
+                <td><img src="{{rest.img}}" height="40"></td>
+                <td>{{rest.평점}}</td>
+                <td>{{rest.메뉴}}</td>
+                <td>{{rest.주소}}</td>
+                <td>{{rest.전화번호}}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
