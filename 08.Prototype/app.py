@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, flash, session
 from bp.crawling import crawl_bp
 from bp.map import map_bp
 from bp.user import user_bp
+from bp.schedule import schdedule_bp
 import os, random
 import util.map_util as mu
 import util.weather_util as wu
@@ -14,6 +15,7 @@ app.config['SESSION_COOKIE_PATH'] = '/'
 app.register_blueprint(crawl_bp, url_prefix='/crawling')        # localhost:5000/crawling/* 는 crawl_bp가 처리
 app.register_blueprint(map_bp, url_prefix='/map')
 app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(schdedule_bp, url_prefix='/schedule')
 
 @app.before_first_request   # 최초 한번만 실행
 def before_first_request():
@@ -52,11 +54,6 @@ def home():
     menu = {'ho':1, 'us':0, 'cr':0, 'ma':0, 'sc':0}
     # flash('Welcome to my Web!!!')       # alert message가 뜸, base.html에 코드를 넣어놓아야하고, secret_key를 설정해야함
     return render_template('home.html', menu=menu)
-
-@app.route('/schedule')
-def schedule():
-    menu = {'ho':0, 'us':0, 'cr':0, 'ma':0, 'sc':1}
-    return render_template('schedule.html', menu=menu)
 
 if __name__ == '__main__':
     app.run(debug=True)
