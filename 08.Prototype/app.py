@@ -4,10 +4,11 @@ from bp.map import map_bp
 from bp.user import user_bp
 from bp.chatbot import chatbot_bp
 from bp.schedule import schdedule_bp
-import os, random
+import os, json
 import util.map_util as mu
 import util.weather_util as wu
-
+""" import util.image_util as iu
+import db_sqlite.profile_dao as pdao """
 
 app = Flask(__name__)
 app.secret_key = 'qwert12345'   # flash와 sesstion을 사용하려면 반드시 설정해야 함
@@ -19,14 +20,14 @@ app.register_blueprint(user_bp, url_prefix='/user')
 app.register_blueprint(chatbot_bp, url_prefix='/chatbot')
 app.register_blueprint(schdedule_bp, url_prefix='/schedule')
 
-@app.before_first_request   # 최초 한번만 실행
+""" @app.before_first_request   # 최초 한번만 실행
 def before_first_request():
     global quotes    # global 변수를 쓰면 다른쪽에서도 수정가능하다
     filename = os.path.join(app.static_folder, 'data/todayQuote.txt')
     with open(filename, encoding='utf-8') as file:
         quotes = file.readlines()   # 리스트 형태로 읽는다
     session['quote'] = random.sample(quotes, 1)[0]     # 1개를 불러오는데, 리스트형이므로 인덱스로 불러온다
-    session['addr'] = '서울시 영등포구'
+    session['addr'] = '서울시 영등포구' """
 
 # for AJAX ###############################################
 @app.route('/change_quote')
@@ -51,6 +52,7 @@ def weather():
 
  ###############################################
 
+
 @app.route('/')
 def home():
     menu = {'ho':1, 'us':0, 'cr':0, 'ma':0, 'sc':0}
@@ -58,4 +60,4 @@ def home():
     return render_template('home.html', menu=menu)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True)     # 외부접속을 허용하려면 host='0.0.0.0'
