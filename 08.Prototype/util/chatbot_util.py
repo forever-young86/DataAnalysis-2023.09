@@ -85,6 +85,7 @@ def proc_yolo(static_folder, img_file, color, linewidth, fontsize):
         draw.text((x+10, y+10), name, font=font, fill=color)
 
     savefile = os.path.join(static_folder, 'result/yolo.png')
+    plt.figure()        # 기존의 이미지와 새 이미지가 겹치지 않도록, 새이미지 추가한다는 코드 넣음
     plt.imshow(img)
     plt.axis('off')
     plt.savefig(savefile, dpi=180, bbox_inches='tight')    # dpi(Dot Per Inch)=180
