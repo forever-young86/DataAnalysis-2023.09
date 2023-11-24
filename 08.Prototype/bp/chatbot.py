@@ -4,6 +4,7 @@ import pandas as pd
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import util.chatbot_util as cu
+from urllib.parse import unquote
 """ import bardapi, openai """
 
 
@@ -11,19 +12,19 @@ chatbot_bp = Blueprint('chatbot_bp', __name__)
 
 menu = {'ho':0, 'us':0, 'cr':0, 'ma':0, 'cb':1, 'sc':0}
 
-""" @chatbot_bp.before_app_first_request
-def before_app_first_request():
+@chatbot_bp.before_app_request      # before_app_first_request 버젼이 달라서 바꿈
+def before_app_request():
     global model, wdf
     model = SentenceTransformer('jhgan/ko-sroberta-multitask')
     filename = os.path.join(current_app.static_folder, 'data/wellness_dataset.csv')
     wdf = pd.read_csv(filename)
     wdf.embedding = wdf.embedding.apply(json.loads)
-    print('wellness_initialization is done.') """
+    print('wellness_initialization is done.')
 
 @chatbot_bp.route('/counsel', methods=['GET','POST'])
 def counsel():
     if request.method == 'GET':
-        return render_template('chatbot/counsel.html', menu=menu)
+        return render_template('chatbot/counsel.html', menu=menu)      # GET : 심리상담 페이지가 보이게하는것!
     else:
         user_input = request.form['userInput']
         embedding = model.encode(user_input)
@@ -33,6 +34,18 @@ def counsel():
             'category':answer.구분, 'user': user_input, 'chatbot': answer.챗봇, 'similiarity': answer.유사도
         }
         return json.dumps(result)
+
+@chatbot_bp.route('/counsel_rest')      # methods= 는 기본이 GET이므로 생략가능
+def counsel_rest():     
+    user_input = unquote(request.args.get('userInput'))     #userInput한것 quote을 unquote함
+    embedding = model.encode(user_input)
+    wdf['유사도'] = wdf.embedding.map(lambda x: cosine_similarity([embedding],[x]).squeeze())
+    answer = wdf.loc[wdf.유사도.idxmax()]
+    result = {
+        'category':answer.구분, 'user':user_input, 'chatbot':answer.챗봇, 'similarity':answer.유사도
+    }
+    return json.dumps(result)
+
 
 """ @chatbot_bp.route('/legal', methods=['GET','POST'])
 def legal():
